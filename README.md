@@ -1,4 +1,4 @@
-# Faq_Chatbot
+# Ai_Powered_Knowledge_Based_Chatbot
 
 RAG FAQ Chatbot — Project Documentation
 1. Project Overview
