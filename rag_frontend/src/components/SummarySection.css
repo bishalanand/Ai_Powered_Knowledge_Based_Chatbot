@@ -1,0 +1,18 @@
+.summary-container {
+  border: 1px solid #ddd;
+  padding: 25px;
+  margin: 20px;
+  border-radius: 8px;
+  background-color: #f4f8ff;
+}
+
+.summary-title {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.summary-text {
+  line-height: 1.6;
+  color: #444;
+}
