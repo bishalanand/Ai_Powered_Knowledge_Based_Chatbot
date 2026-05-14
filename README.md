@@ -1,412 +1,433 @@
-# Ai_Powered_Knowledge_Based_Chatbot
+# 🤖 AI-Powered Knowledge Base Chatbot
 
-RAG FAQ Chatbot — Project Documentation
-1. Project Overview
+An intelligent **full-stack RAG (Retrieval-Augmented Generation) chatbot** that enables users to upload PDF documents, automatically generate summaries, and ask context-aware questions directly from the uploaded document.
 
-This project implements a Retrieval-Augmented Generation (RAG) chatbot that answers questions from uploaded PDF documents.
+The system uses **semantic search, vector embeddings, and LLM reasoning** to generate accurate answers grounded in document content instead of hallucinating generic responses.
 
-Instead of relying only on an LLM’s internal knowledge, the system:
+Built using **React, FastAPI, LangChain, Pinecone, and Groq API (Llama3)**.
 
-Extracts text from PDFs
+---
 
-Converts the text into vector embeddings
+## 🚀 Project Demo
 
-Stores them in a vector database (Pinecone)
+🔗 **GitHub Repository:**  
+https://github.com/bishalanand/Ai_Powered_Knowledge_Based_Chatbot
 
-Retrieves relevant chunks when a user asks a question
+🔗 **Project Demo Video:**  
+_Add your Google Drive demo link here_
 
-Sends those chunks to an LLM (Ollama Llama3)
+---
 
-Generates an answer based on the retrieved context
+## 📌 Features
 
-2. System Architecture
+✅ Upload PDF documents through a React frontend  
+✅ Automatic PDF summarization after upload  
+✅ Ask questions directly from uploaded PDFs  
+✅ Retrieval-Augmented Generation (RAG) pipeline  
+✅ Context-aware question answering  
+✅ Semantic search using vector embeddings  
+✅ Pinecone vector database integration  
+✅ Metadata-based document filtering  
+✅ FastAPI backend integration  
+✅ Groq API integration for fast LLM inference  
+✅ Responsive and clean frontend UI  
+✅ Modular and scalable architecture
 
-The pipeline follows this structure:
+---
 
-User Question
-      ↓
-Retriever (Pinecone)
-      ↓
-Relevant Text Chunks
-      ↓
-LLM (Ollama - Llama3)
-      ↓
-Final Answer
+## 🏗️ System Architecture
 
-Full system flow:
+```text
+                ┌─────────────────┐
+                │  React Frontend │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ FastAPI Backend │
+                └────────┬────────┘
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+         PDF Upload          User Question
+              │                     │
+              ▼                     ▼
+       Text Extraction        Retriever
+              │                     │
+              ▼                     ▼
+         Text Chunking      Pinecone Search
+              │                     │
+              ▼                     ▼
+     Embedding Generation    Relevant Chunks
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                Groq API (Llama3)
+                         │
+                         ▼
+              Summary / Chat Response
+```
 
-PDF Upload
-   ↓
-Ingestion Pipeline
-   ↓
-Text Chunking
-   ↓
-Embedding Generation
-   ↓
-Vector Storage (Pinecone)
-   ↓
-Retriever
-   ↓
-LLM (Llama3)
-   ↓
-Chatbot Response
-3. Project Folder Structure
-faq-rag-chatbot
-│
-├── data
-│   └── uploads
-│        └── faq.pdf
-│
-├── src
-│
-│   ├── ingestion
-│   │      ingest.py
-│
-│   ├── retrieval
-│   │      retriever.py
-│
-│   ├── llm
-│   │      chatbot.py
-│
-│   ├── pipelines
-│   │      rag_pipeline.py
-│
-├── main.py
-├── .env
-4. Module Descriptions
-4.1 Ingestion Module
+---
 
-File:
+## 🛠️ Tech Stack
 
-src/ingestion/ingest.py
+### Frontend
+- React.js
+- CSS
 
-Purpose:
+### Backend
+- FastAPI
+- Python
 
-Convert PDF documents into vector embeddings and store them in Pinecone.
+### AI / RAG Pipeline
+- LangChain
+- Groq API
+- Sentence Transformers
 
-Pipeline:
+### Vector Database
+- Pinecone
 
-PDF
- ↓
-Load document
- ↓
-Split text into chunks
- ↓
-Create embeddings
- ↓
-Store vectors in Pinecone
+### Embedding Model
+- `sentence-transformers/all-MiniLM-L6-v2`
 
-Key operations:
+### LLM
+- `Llama3` via **Groq API**
 
-PDF Loading
-PyPDFLoader
+---
 
-Extracts text from the document.
+## ✨ Core Functionalities
 
-Text Chunking
-RecursiveCharacterTextSplitter
+### 📄 1. PDF Upload
 
-Parameters:
+Users can upload PDF documents directly through the **React frontend**.
 
-chunk_size = 800
-chunk_overlap = 150
+Once uploaded, the backend processes the document and prepares it for semantic retrieval and question answering.
 
-Purpose:
+---
 
-Split large text into smaller pieces so the retriever can search efficiently.
+### 📝 2. Automatic PDF Summary Generation
 
-Example:
+After uploading a document:
 
-Document
-   ↓
-Chunk1
-Chunk2
-Chunk3
-Embedding Generation
+- Text is extracted from the PDF
+- Important information is analyzed
+- A concise summary is generated automatically
 
-Model used:
+This enables users to quickly understand the document before interacting with the chatbot.
 
-sentence-transformers/all-MiniLM-L6-v2
+### Example
 
-This converts text into numerical vectors.
+```text
+Uploaded Document:
+Transformer Architecture.pdf
 
-Example:
+Generated Summary:
+This document explains transformer architecture,
+attention mechanisms, encoder-decoder structure,
+self-attention, and applications in NLP.
+```
 
-"What is refund policy?"
+---
+
+### 💬 3. Ask Questions From PDF
+
+After upload and summarization, users can ask doubts/questions directly from the uploaded document.
+
+The chatbot retrieves relevant document chunks and generates accurate responses based on PDF context.
+
+### Example
+
+```text
+Question:
+What is self-attention?
+
+Answer:
+Self-attention is a mechanism that allows
+a model to focus on different words in
+a sequence while processing information.
+```
+
+---
+
+## 🔍 How It Works
+
+### Step 1 — Upload PDF
+
+User uploads a PDF document through the frontend.
+
 ↓
-[0.34, -0.18, 0.92, ...]
-Vector Storage
 
-Vector database:
+### Step 2 — Text Extraction
 
-Pinecone
+The document text is extracted.
 
-Stored information:
+↓
 
-vector
-metadata
+### Step 3 — Text Chunking
 
-Example metadata:
-
-{
- doc_id: "faq",
- source: "faq.pdf"
-}
-4.2 Retriever Module
-
-File:
-
-src/retrieval/retriever.py
-
-Purpose:
-
-Retrieve relevant document chunks from Pinecone.
-
-Pipeline:
-
-User Question
-      ↓
-Convert to embedding
-      ↓
-Similarity Search
-      ↓
-Top K Results
+The document is divided into smaller chunks for efficient retrieval.
 
 Configuration:
 
-k = 5
+```text
+Chunk Size: 800
+Chunk Overlap: 150
+```
 
-Meaning:
+↓
 
-Retrieve top 5 most relevant chunks
+### Step 4 — Embedding Generation
 
-Filtering:
+Each chunk is converted into vector embeddings using:
 
-filter={"doc_id": doc_id}
+```text
+sentence-transformers/all-MiniLM-L6-v2
+```
 
-This ensures the retriever searches only inside the selected document.
+↓
 
-4.3 LLM Module
+### Step 5 — Vector Storage
 
-File:
+Embeddings are stored inside **Pinecone Vector Database**.
 
-src/llm/chatbot.py
+↓
 
-Purpose:
+### Step 6 — Summary Generation
 
-Generate answers using the retrieved context.
+A concise summary of the uploaded document is generated automatically using **Groq Llama3**.
 
-Model used:
+↓
 
-Ollama Llama3
+### Step 7 — User Questions
 
-Pipeline:
+Users ask questions related to the uploaded document.
 
-Retrieved Chunks
-      ↓
-Prompt Creation
-      ↓
-LLM
-      ↓
-Answer
+↓
 
-Chain used:
+### Step 8 — Semantic Retrieval
 
-RetrievalQA
+Top relevant chunks are retrieved from Pinecone.
 
-This combines:
+Configuration:
 
-Retriever + LLM
-4.4 RAG Pipeline Module
+```text
+Top K Retrieval = 5
+```
 
-File:
+↓
 
-src/pipelines/rag_pipeline.py
+### Step 9 — Response Generation
 
-Purpose:
+Retrieved chunks are passed to **Groq Llama3**, which generates a context-aware answer.
 
-Connect the retriever and chatbot together.
+---
 
-Pipeline:
+## 📸 Application Screenshots
 
-doc_id
-   ↓
-get_retriever()
-   ↓
-create_chatbot()
-   ↓
-QA Chain
+### 🏠 Home Page
 
-This module acts as the system orchestrator.
+<img src="Ai chatbot picture/Home.png" width="100%" />
 
-4.5 Main Application
+---
 
-File:
+### 📤 PDF Upload Interface
 
-main.py
+<img src="Ai chatbot picture/upload.png" width="100%" />
 
-Purpose:
+---
 
-Run the chatbot system.
+### 📝 Generated Summary
 
-Responsibilities:
+<img src="Ai chatbot picture/summary.png" width="100%" />
 
-Accept PDF name from user
+---
 
-Run ingestion
+### 💬 Chatbot Interface
 
-Build RAG pipeline
+<img src="Ai chatbot picture/chat.png" width="100%" />
 
-Start chatbot loop
+---
 
-Execution flow:
+## 📂 Project Structure
 
-User enters PDF name
-      ↓
-Check if file exists
-      ↓
-Run ingestion
-      ↓
-Create retriever
-      ↓
-Initialize chatbot
-      ↓
-Start Q&A loop
-5. Environment Configuration
+```text
+Ai_Powered_Knowledge_Based_Chatbot
+│
+├── frontend
+│   ├── src
+│   ├── public
+│   └── package.json
+│
+├── backend
+│
+│   ├── api
+│   │   └── upload.py
+│   │
+│   ├── src
+│   │   ├── ingestion
+│   │   │   └── ingest.py
+│   │   │
+│   │   ├── retrieval
+│   │   │   └── retriever.py
+│   │   │
+│   │   ├── llm
+│   │   │   └── chatbot.py
+│   │   │
+│   │   ├── pipelines
+│   │   │   └── rag_pipeline.py
+│   │
+│   ├── data
+│   │   └── uploads
+│   │
+│   ├── main.py
+│   ├── requirements.txt
+│   └── .env
+│
+└── README.md
+```
 
-File:
+---
 
-.env
+## ⚙️ Installation & Setup
 
-Required variables:
+### 1️⃣ Clone Repository
 
-PINECONE_API_KEY=your_api_key
-PINECONE_INDEX_NAME=faq-chatbot
-6. How to Run the Project
+```bash
+git clone https://github.com/bishalanand/Ai_Powered_Knowledge_Based_Chatbot.git
 
-Step 1 — Install dependencies
+cd Ai_Powered_Knowledge_Based_Chatbot
+```
 
+---
+
+## Backend Setup
+
+### 2️⃣ Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-Step 2 — Start Ollama
+---
+### 4️⃣ Run Backend Server
 
-ollama serve
+```bash
+uvicorn main:app --reload
+```
 
-Step 3 — Pull Llama3 model
+Backend will run on:
 
-ollama pull llama3
+```text
+http://localhost:8000
+```
 
-Step 4 — Run the project
+---
 
-python main.py
+## Frontend Setup
 
-Step 5 — Provide PDF name
+### 5️⃣ Navigate to Frontend
+
+```bash
+cd frontend
+```
+
+---
+
+### 6️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 7️⃣ Start React Application
+
+```bash
+npm run dev
+```
+
+or
+
+```bash
+npm start
+```
+
+Frontend will run on:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## 🔥 Key Highlights
+
+- Built a **full-stack AI application**
+- Implemented **Retrieval-Augmented Generation (RAG)**
+- Integrated **React frontend with FastAPI backend**
+- Added **automatic PDF summarization**
+- Enabled **document-based conversational AI**
+- Used **semantic search with Pinecone vector DB**
+- Integrated **Groq API for ultra-fast inference**
+- Built **context-aware PDF Q&A system**
+- Designed **scalable modular architecture**
+
+---
+
+## ⚠️ Known Limitations
+
+- Currently optimized for single-document chat
+- Re-uploading the same document may create duplicate vectors
+- Requires internet connection for Groq API access
+- No authentication system yet
+
+---
+
+## 🛣️ Future Improvements
+
+### 📚 Multi-Document Chat
+
+Enable users to interact with multiple PDFs simultaneously.
 
 Example:
 
-Enter uploaded PDF name: faq.pdf
-
-Step 6 — Start asking questions
-
-Ask question: What is refund policy?
-7. Current Features Implemented
-
-✔ Modular architecture
-✔ PDF ingestion pipeline
-✔ Vector database integration
-✔ Document metadata filtering
-✔ RAG pipeline implementation
-✔ Local LLM (Ollama) support
-
-8. Known Limitations
-
-Current system limitations:
-
-Single-document chat
-
-Only one document is used per session.
-
-No Web Interface
-
-Interaction happens through terminal.
-
-Duplicate ingestion risk
-
-Re-uploading the same document may create duplicate vectors.
-
-Slow first response
-
-LLM loading may take 30–60 seconds.
-
-9. Future Improvements (Roadmap)
-Phase 2 — Multi-document Chat
-
-Allow querying across multiple documents.
-
-Example:
-
+```text
 Chat with:
 - faq.pdf
+- research.pdf
 - policy.pdf
-Phase 3 — Web Application
+```
 
-Add frontend using:
+### ⚡ Advanced RAG Improvements
 
-React + FastAPI
+- Hybrid Search
+- Reranking
+- Streaming Responses
+- Embedding Cache
+- Response Cache
 
-User will be able to:
 
-Upload PDFs
-Chat in browser
-Phase 4 — Advanced RAG Improvements
+## 🤝 Contributing
 
-Possible improvements:
+Contributions, issues, and feature requests are welcome.
 
-Hybrid Search
+Feel free to fork the repository and submit a pull request.
 
-Combine:
+---
 
-vector search + keyword search
-Reranking
+## 👨‍💻 Author
 
-Use models to reorder retrieved chunks.
+### Bishal Anand
 
-Streaming Responses
+🔗 **GitHub:**  
+https://github.com/bishalanand
 
-Generate answers in real time.
 
-Caching
 
-Cache embeddings and responses.
+---
 
-10. Final Summary
+## ⭐ Support
 
-This project implements a modular RAG chatbot system with the following pipeline:
-
-PDF
- ↓
-Ingestion
- ↓
-Embeddings
- ↓
-Vector Database
- ↓
-Retriever
- ↓
-LLM
- ↓
-Answer
-
-The system is designed so each component can be independently improved or replaced, which makes it scalable for production systems.
-
-If you want, I can also create a much better professional document for this project, including:
-
-system diagrams
-
-pipeline diagrams
-
-RAG mathematics
-
-vector similarity explanation
-
-embedding theory
+If you found this project useful, consider giving it a **star ⭐** on GitHub.
