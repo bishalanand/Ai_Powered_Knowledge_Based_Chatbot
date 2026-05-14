@@ -14,7 +14,7 @@ Built using **React, FastAPI, LangChain, Pinecone, and Groq API (Llama3)**.
 https://github.com/bishalanand/Ai_Powered_Knowledge_Based_Chatbot
 
 🔗 **Project Demo Video:**  
-_Add your Google Drive demo link here_
+https://drive.google.com/drive/folders/1hNtdEzN5NCtFfjKbM2trgMfWEa2fKxXq?usp=sharing)
 
 ---
 
