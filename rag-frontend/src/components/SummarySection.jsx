@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getSummary } from "../services/api";
+import ReactMarkdown from "react-markdown";
 import "./SummarySection.css";
 
 function SummarySection({ documentId }) {
@@ -39,7 +40,7 @@ function SummarySection({ documentId }) {
       {loading ? (
         <p>Generating summary...</p>
       ) : (
-        <p className="summary-text">{summary}</p>
+        <p className="summary-text"><ReactMarkdown>{summary}</ReactMarkdown></p>
       )}
 
     </div>

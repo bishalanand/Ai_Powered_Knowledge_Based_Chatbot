@@ -18,11 +18,17 @@ def generate_pdf_summary(documents):
         text += doc.page_content + "\n"
 
     prompt = f"""
-    Explain the following document in a short and clear way.
-    Provide:
-    1. Short summary
-    2. Key points
-    3. Important ideas
+    Explain the following document in a structured way with multiple paragraphs.
+    Provide the summary in the following sections, each as a separate paragraph:
+
+    Short Summary:
+    [Provide a brief overview of the document.]
+
+    Key Points:
+    [List the main points, each on a new line or in bullet points.]
+
+    Important Ideas:
+    [Highlight the core concepts or ideas.]
 
     Document:
     {text}

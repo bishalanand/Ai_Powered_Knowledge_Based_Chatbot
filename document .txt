@@ -410,3 +410,331 @@ vector similarity explanation
 embedding theory
 
 Basically the kind of documentation you can attach to a GitHub project or internship submission
+
+
+
+
+
+
+
+
+
+
+
+"""work from where we have to start"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROJECT: PDF RAG Chatbot Backend Progress
+
+---
+
+1. PROJECT GOAL
+
+---
+
+Build a backend system that:
+
+1. Accepts a PDF from the user
+2. Extracts and chunks the document
+3. Stores embeddings in Pinecone
+4. Generates a short PDF explanation/summary
+5. Allows users to ask questions about the document using a RAG chatbot
+
+---
+
+2. CURRENT BACKEND STRUCTURE
+
+---
+
+backend/
+│
+├── main.py
+├── models.py
+├── store.py
+│
+├── api/
+│   ├── upload.py
+│   └── summary.py
+│
+├── src/
+│   ├── ingestion/
+│   │    └── ingest.py
+│   │
+│   ├── retrieval/
+│   │    └── retriever.py
+│   │
+│   ├── llm/
+│   │    └── chatbot.py
+│   │
+│   ├── pipelines/
+│   │    └── rag_pipeline.py
+│   │
+│   └── summarization/
+│        └── pdf_explainer.py
+│
+└── data/uploads/
+
+---
+
+3. COMPLETED BACKEND COMPONENTS
+
+---
+
+1. PDF Ingestion Module
+
+File: src/ingestion/ingest.py
+
+Features:
+
+* Loads PDF using PyPDFLoader
+* Splits document using RecursiveCharacterTextSplitter
+* Chunk size = 800
+* Chunk overlap = 150
+* Adds metadata:
+
+  * doc_id
+  * source
+* Generates embeddings using:
+  sentence-transformers/all-MiniLM-L6-v2
+* Stores embeddings in Pinecone
+* Deletes old vectors for the same doc_id before inserting
+* Returns:
+  doc_id
+  file_name
+  number of chunks
+  chunks themselves
+
+---
+
+2. Retriever Module
+
+File: src/retrieval/retriever.py
+
+Features:
+
+* Connects to Pinecone vector store
+* Uses same embedding model used during ingestion
+* Creates retriever filtered by:
+
+filter = {"doc_id": doc_id}
+
+This ensures queries only search within the selected document.
+
+Retriever settings:
+k = 5
+
+---
+
+3. Chatbot Module
+
+File: src/llm/chatbot.py
+
+Features:
+
+* Uses ChatGroq
+* Model used:
+
+llama-3.1-8b-instant
+
+* Creates a RetrievalQA chain using:
+  retriever
+  LLM
+
+Returns:
+qa_chain
+
+---
+
+4. RAG Pipeline
+
+File: src/pipelines/rag_pipeline.py
+
+Purpose:
+Combine retriever + chatbot
+
+Steps:
+
+1. Create retriever using doc_id
+2. Create chatbot using retriever
+3. Return qa_chain
+
+---
+
+5. Upload API
+
+File: api/upload.py
+
+Responsibilities:
+
+1. Receive uploaded PDF
+2. Save file to uploads directory
+3. Call ingest_pdf()
+4. Store chunks in shared memory
+5. Return document_id
+
+---
+
+6. Summary API
+
+File: api/summary.py
+
+Responsibilities:
+
+1. Receive document_id
+2. Load chunks from shared memory
+3. Pass chunks to summarization module
+4. Return generated summary
+
+---
+
+7. Shared Memory
+
+File: store.py
+
+Purpose:
+Share runtime memory between APIs
+
+Stores:
+
+chunk_store
+Stores document chunks
+
+format:
+{
+doc_id: [chunk1, chunk2, chunk3]
+}
+
+pipeline_cache
+Stores RAG pipelines
+
+format:
+{
+doc_id: qa_chain
+}
+
+---
+
+4. TECHNOLOGIES USED
+
+---
+
+Backend Framework:
+FastAPI
+
+Vector Database:
+Pinecone
+
+Embeddings:
+sentence-transformers/all-MiniLM-L6-v2
+
+LLM Provider:
+Groq
+
+LLM Model:
+llama-3.1-8b-instant
+
+Document Processing:
+LangChain
+
+---
+
+5. FEATURES CURRENTLY WORKING
+
+---
+
+✔ Upload PDF
+✔ Extract and chunk document
+✔ Store embeddings in Pinecone
+✔ Filter retrieval by document
+✔ Generate summary from chunks
+
+---
+
+6. FEATURES NOT YET IMPLEMENTED
+
+---
+
+1. chat.py API
+   User question endpoint
+
+2. RAG chat endpoint
+
+POST /chat
+input:
+question
+document_id
+
+output:
+LLM answer
+
+3. Frontend interface
+
+User workflow:
+Upload PDF
+See explanation
+Ask questions
+
+---
+
+7. FUTURE IMPROVEMENTS
+
+---
+
+1. Remove in-memory chunk_store
+   Instead fetch chunks directly from Pinecone
+
+2. Add conversation history
+
+3. Add multi-user session support
+
+4. Add document list endpoint
+
+5. Add authentication (optional)
+
+---
+
+8. PROMPT TO RESUME WORK LATER
+
+---
+
+When continuing development later, use this prompt:
+
+PROMPT:
+
+"I am building a PDF RAG chatbot backend using FastAPI, Pinecone, LangChain, and Groq.
+
+The backend currently has:
+
+* PDF ingestion module
+* Pinecone vector storage
+* Retriever filtered by document_id
+* Chatbot module using Groq llama-3.1-8b-instant
+* RAG pipeline builder
+* Upload API
+* Summary API
+* Shared in-memory store for chunks
+
+The remaining task is to implement the chat API (chat.py) that:
+
+1. receives question + document_id
+2. builds or loads cached RAG pipeline
+3. runs RetrievalQA
+4. returns answer.
+
+Please continue the backend development from this stage and help implement the chat endpoint cleanly."
+
+---
+
+END OF DOCUMENT

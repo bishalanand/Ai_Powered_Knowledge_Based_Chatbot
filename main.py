@@ -1,48 +1,40 @@
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from src.ingestion.ingest import ingest_pdf
-from src.pipelines.rag_pipeline import build_rag_pipeline
+from api.upload import router as upload_router
+from api.summary import router as summary_router
+from api.chat import router as chat_router
+
+app = FastAPI(
+    title="AI PDF Chatbot API",
+    description="Backend for PDF based RAG chatbot",
+    version="1.0"
+)
+
+# Allowed frontend URLs
+origins = [
+    "http://localhost:5173",  # React local
+    "http://127.0.0.1:5173",
+
+    # Add Vercel URL after deployment
+    # "https://your-app.vercel.app"
+]
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Register routes
+app.include_router(upload_router)
+app.include_router(summary_router)
+app.include_router(chat_router)
 
 
-upload_folder = "data/uploads"
-
-pdf_name = input("Enter uploaded PDF name: ")
-
-pdf_path = os.path.join(upload_folder, pdf_name)
-
-if not os.path.exists(pdf_path):
-    print("PDF not found!")
-    exit()
-
-print("Ingesting document...")
-
-# run ingestion
-result = ingest_pdf(pdf_path)
-
-doc_id = result["doc_id"]
-docs=result["chunk"]
-from src.summarization.pdf_explainer import generate_pdf_summary
-
-print("\nGenerating PDF explanation...")
-
-summary = generate_pdf_summary(docs)
-
-print("\nPDF Explanation:")
-print(summary)
-
-# build rag pipeline
-qa_chain = build_rag_pipeline(doc_id)
-
-print("\nChatbot ready!")
-
-while True:
-
-    query = input("\nAsk question (type exit to stop): ")
-
-    if query.lower() == "exit":
-        break
-
-    result = qa_chain.invoke({"query": query})
-
-    print("\nAnswer:")
-    print(result["result"])
+@app.get("/")
+def home():
+    return {"message": "Backend running successfully"}
