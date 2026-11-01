@@ -26,3 +26,4 @@ requests
 aiohttp
 httpx
 PyYAML
+uuid

@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+import uuid
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -25,7 +25,7 @@ def ingest_pdf(pdf_path: str):
         raise FileNotFoundError(f"{pdf_path} does not exist")
 
     file_name = os.path.basename(pdf_path)
-    doc_id = file_name.replace(".pdf", "")
+    doc_id = str(uuid.uuid4())
 
     print(f"\nProcessing document: {file_name}")
 
