@@ -14,7 +14,6 @@ def chatting(request: ChatRequest):
         qa_chain=pipeline_cache["doc_id"]
         
     else:
-        retiever=get_retriever(doc_id)
         qa_chain=build_rag_pipeline(doc_id)
         pipeline_cache["doc_id"]=qa_chain
         
